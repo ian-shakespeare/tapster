@@ -3310,7 +3310,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "tapste-rs"
+name = "tapster-api"
 version = "0.1.0"
 dependencies = [
  "aws-config",

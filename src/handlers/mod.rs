@@ -20,7 +20,7 @@ mod media;
 pub(crate) async fn healthcheck_handler() -> impl IntoResponse {
     Json(json!({
         "status": "OK",
-        "service": "tapste-rs",
+        "service": "tapster-api",
     }))
 }
 

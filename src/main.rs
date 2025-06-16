@@ -4,7 +4,7 @@ use aws_config::{BehaviorVersion, Region};
 use aws_sdk_s3::config::Credentials;
 use dotenvy::dotenv;
 use sqlx::postgres::PgPoolOptions;
-use tapste_rs::AppState;
+use tapster_api::AppState;
 
 #[tokio::main]
 async fn main() {
@@ -40,14 +40,14 @@ async fn main() {
 
     if let Err(e) = client
         .head_bucket()
-        .bucket(tapste_rs::MEDIA_BUCKET)
+        .bucket(tapster_api::MEDIA_BUCKET)
         .send()
         .await
     {
         if e.into_service_error().is_not_found() {
             client
                 .create_bucket()
-                .bucket(tapste_rs::MEDIA_BUCKET)
+                .bucket(tapster_api::MEDIA_BUCKET)
                 .send()
                 .await
                 .expect("failed to create media s3 bucket");
@@ -56,7 +56,7 @@ async fn main() {
 
     let signing_key = env::var("SIGNING_KEY").expect("missing SIGNING_KEY environment variable");
 
-    let app = tapste_rs::router(AppState::new(pool.clone(), client, signing_key));
+    let app = tapster_api::router(AppState::new(pool.clone(), client, signing_key));
     let addr = "0.0.0.0:8000";
 
     let listener = tokio::net::TcpListener::bind(addr)
