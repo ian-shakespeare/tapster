@@ -1,8 +1,9 @@
 use serde::{Deserialize, Serialize};
 use sqlx::{Executor, FromRow, Postgres};
+use utoipa::ToSchema;
 use uuid::Uuid;
 
-#[derive(Debug, FromRow, Deserialize, Serialize)]
+#[derive(Debug, FromRow, Deserialize, Serialize, ToSchema)]
 pub(crate) struct UnitModel {
     id: Uuid,
     name: String,

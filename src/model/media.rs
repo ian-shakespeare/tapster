@@ -1,9 +1,10 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use sqlx::{prelude::FromRow, Executor, Postgres, Type};
+use utoipa::ToSchema;
 use uuid::Uuid;
 
-#[derive(Debug, FromRow, Type, Deserialize, Serialize)]
+#[derive(Debug, FromRow, Type, Deserialize, Serialize, ToSchema)]
 pub(crate) struct MediaModel {
     pub id: Uuid,
     pub size: i64,

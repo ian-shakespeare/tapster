@@ -1,11 +1,12 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use sqlx::{prelude::FromRow, Executor, Postgres, Type};
+use utoipa::ToSchema;
 use uuid::Uuid;
 
 use super::MediaModel;
 
-#[derive(Debug, FromRow, Type, Deserialize, Serialize)]
+#[derive(Debug, FromRow, Type, Deserialize, Serialize, ToSchema)]
 pub(crate) struct IngredientModel {
     pub id: Uuid,
     pub name: String,
@@ -178,7 +179,7 @@ impl IngredientModel {
     }
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
 pub(crate) struct CreateIngredientSchema {
     pub name: String,
     pub description: String,
@@ -186,7 +187,7 @@ pub(crate) struct CreateIngredientSchema {
     pub thumbnail_id: Option<Uuid>,
 }
 
-#[derive(Debug, FromRow, Type, Deserialize, Serialize)]
+#[derive(Debug, FromRow, Type, Deserialize, Serialize, ToSchema)]
 pub(crate) struct SubIngredientModel {
     pub id: Uuid,
     pub parts: i16,

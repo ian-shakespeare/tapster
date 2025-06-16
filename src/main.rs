@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, io};
 
 use aws_config::{BehaviorVersion, Region};
 use aws_sdk_s3::config::Credentials;
@@ -7,7 +7,7 @@ use sqlx::postgres::PgPoolOptions;
 use tapster_api::AppState;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> io::Result<()> {
     let _ = dotenv().ok();
 
     let database_url = env::var("DATABASE_URL").expect("missing DATABASE_URL environment variable");
@@ -64,7 +64,5 @@ async fn main() {
         .expect("failed to bind tcp listener");
 
     println!("Listening on {addr}");
-    axum::serve(listener, app)
-        .await
-        .expect("failed to serve listener");
+    axum::serve(listener, app).await
 }

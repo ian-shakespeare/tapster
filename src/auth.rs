@@ -2,6 +2,7 @@ use axum::http::{HeaderMap, StatusCode};
 use chrono::{Duration, NaiveDateTime, Utc};
 use jsonwebtoken::{Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 use uuid::Uuid;
 
 use crate::{model::UserModel, Error};
@@ -12,7 +13,7 @@ struct Claims {
     sub: Uuid,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct Auth {
     #[serde(rename = "accessKey")]
     access_key: String,
@@ -62,8 +63,7 @@ impl Auth {
 
         let token = auth_header
             .split(' ')
-            .skip(1)
-            .next()
+            .nth(1)
             .ok_or(Error::new(StatusCode::UNAUTHORIZED, "missing auth token"))?;
 
         Self::decode(signing_key, token)

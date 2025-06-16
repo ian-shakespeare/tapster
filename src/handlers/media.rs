@@ -6,8 +6,10 @@ use axum::{
     response::IntoResponse,
     Json,
 };
+use serde::Deserialize;
 use std::sync::Arc;
 use tokio_util::io::ReaderStream;
+use utoipa::ToSchema;
 use uuid::Uuid;
 
 use crate::{
@@ -16,6 +18,25 @@ use crate::{
     AppState, Auth, MEDIA_BUCKET,
 };
 
+#[derive(Deserialize, ToSchema)]
+#[allow(unused)]
+struct MediaForm {
+    #[schema(format = Binary, content_media_type = "image/*")]
+    file: String,
+}
+
+#[utoipa::path(
+    post,
+    path = "/media",
+    request_body(content = MediaForm, content_type = "multipart/form-data"),
+    responses(
+        (status = CREATED, description = "Success", body = MediaModel, content_type = "application/json")
+    ),
+    security(
+        ("http" = [])
+    ),
+    tag = crate::MEDIA_TAG
+)]
 pub(crate) async fn create_media_handler(
     header: HeaderMap,
     State(data): State<Arc<AppState>>,
@@ -59,7 +80,7 @@ pub(crate) async fn create_media_handler(
                     },
                 )
                 .await?;
-            return Ok(Json(media));
+            return Ok((StatusCode::CREATED, Json(media)));
         }
     }
 
@@ -69,6 +90,20 @@ pub(crate) async fn create_media_handler(
     ))
 }
 
+#[utoipa::path(
+    get,
+    path = "/media/{media_id}",
+    params(
+        ("media_id" = Uuid, Path, description = "ID of the media to retrieve")
+    ),
+    responses(
+        (status = OK, description = "Success", body = str, content_type = "image/*")
+    ),
+    security(
+        ("http" = [])
+    ),
+    tag = crate::MEDIA_TAG
+)]
 pub(crate) async fn get_media_handler(
     header: HeaderMap,
     Path(media_id): Path<Uuid>,

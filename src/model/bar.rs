@@ -1,11 +1,12 @@
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use sqlx::{Executor, FromRow, Postgres};
+use utoipa::ToSchema;
 use uuid::Uuid;
 
 use super::MediaModel;
 
-#[derive(Debug, FromRow, Deserialize, Serialize)]
+#[derive(Debug, FromRow, Deserialize, Serialize, ToSchema)]
 pub(crate) struct BarModel {
     pub id: Uuid,
     pub name: String,
@@ -130,7 +131,7 @@ impl BarModel {
     }
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
 pub(crate) struct CreateBarSchema {
     pub name: String,
     #[serde(rename = "thumbnailId")]
